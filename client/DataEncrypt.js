@@ -1,6 +1,8 @@
 'use strict'
 
 var openpgp = require('openpgp');
+var fs = require('fs');
+var file_name = require('./config').conf.fileName;
 
 var DataEncrypt = function(pubkey, seckey) {
     if (pubkey != undefined) {
@@ -12,8 +14,17 @@ var DataEncrypt = function(pubkey, seckey) {
     }
 }
 
-DataEncrypt.prototype.encrypt = function(options)
-{
+DataEncrypt.prototype.encrypt = function(options) {
+    openpgp.encrypt(options).then(function(ciphertext) {
+
+        var encrypted = ciphertext.data;
+        console.log(encrypted);
+
+        fs.writeFile(file_name + '.pgp', encrypted, 
+        (err) => {
+            if (err) throw (err);
+        });
+    });
 }
 
 DataEncrypt.prototype.getOptions = function(data) {

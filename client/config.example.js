@@ -4,5 +4,6 @@ var conf = {
 exports.conf = conf;
 
 var pubkey = "your public key";
+exports.pubkey = pubkey;
 
 var seckey = "your secret key";

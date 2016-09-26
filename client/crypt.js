@@ -1,10 +1,15 @@
-var fs = require('fs');
 var config = require('./config');
+var DataEncrypt = require('./DataEncrypt')
+var fs = require('fs');
 
-var file_content = fs.readFile(config.conf.fileName, function(err, data) {
+fs.readFile(config.conf.fileName, function (err, data) {
     if (err) {
-            console.log(err);
-            console.log("Cannot read file " + config.conf.fileName);
-            return ;
-        }
+        console.log(err);
+    }
+
+    var d_encrypt = new DataEncrypt.DataEncrypt(config.pubkey);
+    var options = d_encrypt.getOptions(config.conf.fileName);
+    if (options != undefined) {
+        d_encrypt.encrypt(options);
+    }
 });
