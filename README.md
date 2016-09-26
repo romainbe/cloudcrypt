@@ -1,0 +1,1 @@
+Encrypt files before sending them to dropbox.

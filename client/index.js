@@ -1,0 +1,1 @@
+var openpgp = require('openpgp');

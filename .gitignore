@@ -1,0 +1,7 @@
+*~
+.tern-*
+*.workspace
+
+node_modules
+
+client/node_modules
