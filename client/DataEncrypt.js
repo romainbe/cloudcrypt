@@ -2,7 +2,6 @@
 
 var openpgp = require('openpgp');
 var fs = require('fs');
-var file_name = require('./config').conf.fileName;
 
 var DataEncrypt = function(pubkey, seckey) {
     if (pubkey != undefined) {
@@ -14,11 +13,9 @@ var DataEncrypt = function(pubkey, seckey) {
     }
 }
 
-DataEncrypt.prototype.encrypt = function(options, dbx_ctor) {
+DataEncrypt.prototype.encrypt = function(options, dbx_ctor, file_name) {
     openpgp.encrypt(options).then(function(ciphertext) {
-
         var encrypted = ciphertext.data;
-        console.log(encrypted);
         
         var dbx = dbx_ctor.getDbx();
         var file_infos = dbx_ctor.getFileInfos(encrypted, file_name + '.pgp');

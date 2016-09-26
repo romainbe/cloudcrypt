@@ -1,21 +1,30 @@
 'use strict'
 
 var config = require('./config');
+var FilesConfig = require('./FilesConfig');
 var DataEncrypt = require('./DataEncrypt')
 var fs = require('fs');
 var dropbox = require('./DropboxConnector');
 
-fs.readFile(config.conf.fileName, function (err, data) {
-    if (err) {
-        console.log(err);
-    }
+var files_config = new FilesConfig.FilesConfig(config.files_to_crypt);
+var files_list = files_config.getAllFiles();
+
+if (files_list.length) {
 
     var d_encrypt = new DataEncrypt.DataEncrypt(config.pubkey);
-    var options = d_encrypt.getOptions(config.conf.fileName);
-    if (options != undefined) {
-        var dbx_ctor = new dropbox.DropboxConnector();
-        dbx_ctor.init(config.conf.dropbox_access_token);
-        
-        d_encrypt.encrypt(options, dbx_ctor);
-    }
-});
+    var dbx_ctor = new dropbox.DropboxConnector();
+    dbx_ctor.init(config.conf.dropbox_access_token);
+
+    files_list.forEach((elem) => {
+        fs.readFile(elem, function (err, data) {
+            if (err) {
+                console.log(err);
+                return ;
+            }
+            var options = d_encrypt.getOptions(data);
+            if (options != undefined) {
+                d_encrypt.encrypt(options, dbx_ctor, elem);
+            }
+        });
+    });
+}
