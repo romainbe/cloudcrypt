@@ -1,6 +1,7 @@
 var assert = require('assert');
 var openpgp = require('openpgp');
 var data_encrypt = require('../DataEncrypt');
+var dbx_ctor = require('../DropboxConnector')
 
 describe('DataEncrypt', function() {
 
@@ -43,6 +44,29 @@ describe('DataEncrypt', function() {
             assert.equal('Test-data', options.data);
             assert.notEqual(undefined, options.publicKeys)
             assert.notEqual(undefined, options.privateKeys)
+        });
+    });
+});
+
+describe('DropboxConnector', function() {
+    describe('getFileInfos', function () {
+        var dropbox = new dbx_ctor.DropboxConnector();
+        
+        it ('Should return undefined if content empty or undefined', function () {
+           assert.equal(undefined, dropbox.getFileInfos()); 
+        });
+        
+        it ('Should return undefined if path empty or undefined', function () {
+           assert.equal(undefined, dropbox.getFileInfos('fake_content')); 
+        });
+        
+        it ('Should return a FileCommitInfo if content and path are supplied', function () {
+            var file_commit_in_infos = dropbox.getFileInfos('fake_content', 'file_name.txt');
+            assert.equal('fake_content', file_commit_in_infos.contents);
+            assert.equal('file_name.txt', file_commit_in_infos.path);
+            assert.equal('overwrite', file_commit_in_infos.mode);
+            assert.equal(false, file_commit_in_infos.autorename);
+            assert.equal(false, file_commit_in_infos.mute);
         });
     });
 });

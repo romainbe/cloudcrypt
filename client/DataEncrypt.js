@@ -14,16 +14,16 @@ var DataEncrypt = function(pubkey, seckey) {
     }
 }
 
-DataEncrypt.prototype.encrypt = function(options) {
+DataEncrypt.prototype.encrypt = function(options, dbx_ctor) {
     openpgp.encrypt(options).then(function(ciphertext) {
 
         var encrypted = ciphertext.data;
         console.log(encrypted);
-
-        fs.writeFile(file_name + '.pgp', encrypted, 
-        (err) => {
-            if (err) throw (err);
-        });
+        
+        var dbx = dbx_ctor.getDbx();
+        var file_infos = dbx_ctor.getFileInfos(encrypted, file_name + '.pgp');
+        
+        dbx.filesUpload(file_infos);
     });
 }
 
@@ -44,6 +44,14 @@ DataEncrypt.prototype.getOptions = function(data) {
     }
     
     return options;
+}
+
+DataEncrypt.prototype.setPublicKey = function (pubkey) {
+    this.pubkey = pubkey;
+}
+
+DataEncrypt.prototype.setPrivateKey = function (seckey) {
+    this.seckey = seckey;
 }
 
 exports.DataEncrypt = DataEncrypt;

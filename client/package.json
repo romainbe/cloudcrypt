@@ -7,6 +7,7 @@
     "test": "test"
   },
   "dependencies": {
+    "dropbox": "^2.2.1",
     "openpgp": "^2.3.3"
   },
   "devDependencies": {
