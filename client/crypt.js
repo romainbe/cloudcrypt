@@ -1,3 +1,5 @@
+'use strict'
+
 var config = require('./config');
 var DataEncrypt = require('./DataEncrypt')
 var fs = require('fs');
