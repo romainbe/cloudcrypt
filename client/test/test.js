@@ -18,9 +18,14 @@ describe('DataEncrypt', function() {
       '-----END PGP PUBLIC KEY BLOCK-----';
 
     describe('getOptions', function() {
+        it('should return undefined if data length is null', function() {
+            var d_encrypt = new data_encrypt.DataEncrypt();
+            assert.equal(undefined, d_encrypt.getOptions());
+        });
+        
         it('should return undefined if data is empty', function() {
             var d_encrypt = new data_encrypt.DataEncrypt();
-            assert.equal(undefined, d_encrypt.getOptions(''));
+            assert.equal(undefined, d_encrypt.getOptions());
         });
         
         it('should return undefined if publicKeys is missing', function() {

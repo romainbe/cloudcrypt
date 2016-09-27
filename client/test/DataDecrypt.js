@@ -31,9 +31,14 @@ describe('DataDecrypt', function() {
             '-----END PGP MESSAGE-----'].join('\n');
 
     describe('getOptions', function() {
-        it('should return undefined if data is empty', function() {
+        it('should return undefined if data length is null', function() {
             var d_decrypt = new data_decrypt.DataDecrypt();
             assert.equal(undefined, d_decrypt.getOptions(''));
+        });
+        
+        it('should return undefined if data is empty', function() {
+            var d_decrypt = new data_decrypt.DataDecrypt();
+            assert.equal(undefined, d_decrypt.getOptions());
         });
         
         it('should return undefined if privateKeys is missing', function() {
