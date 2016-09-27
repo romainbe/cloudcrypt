@@ -16,9 +16,7 @@ describe('FilesConfig', function() {
         it('should return 3 full paths when the example conf is given', function() {
             var conf = new files_config.FilesConfig(files_to_crypt);
             var files = conf.getAllFiles();
-            
-            console.log(files);
-            
+
             assert.equal(3, files.length);
             assert.equal("/home/romain/hello_world.txt", files[0]);
             assert.equal("/home/romain/Images/romain.png", files[1]);
