@@ -27,7 +27,7 @@ DataEncrypt.prototype.encrypt = function(options, dbx_ctor, file_name) {
 DataEncrypt.prototype.getOptions = function(data) {
     if (this.pubkey == undefined) {
         return undefined;
-    } else if (data.length == 0 || data == undefined) {
+    } else if (data == undefined || data.length == 0) {
         return undefined;
     }
     

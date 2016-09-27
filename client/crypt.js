@@ -15,15 +15,15 @@ if (files_list.length) {
     var dbx_ctor = new dropbox.DropboxConnector();
     dbx_ctor.init(config.conf.dropbox_access_token);
 
-    files_list.forEach((elem) => {
-        fs.readFile(elem, function (err, data) {
+    files_list.forEach((file_name) => {
+        fs.readFile(file_name, function (err, data) {
             if (err) {
                 console.log(err);
                 return ;
             }
             var options = d_encrypt.getOptions(data);
             if (options != undefined) {
-                d_encrypt.encrypt(options, dbx_ctor, elem);
+                d_encrypt.encrypt(options, dbx_ctor, file_name);
             }
         });
     });
