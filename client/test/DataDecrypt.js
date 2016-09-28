@@ -50,8 +50,8 @@ describe('DataDecrypt', function() {
             var d_decrypt = new data_decrypt.DataDecrypt(seckey);
             var options = d_decrypt.getOptions(pgp_msg);
             
-            assert.notEqual(0, options.data.length);
-            assert.notEqual(undefined, options.privateKeys)
+            assert.notEqual(0, options.message.length);
+            assert.notEqual(undefined, options.privateKey)
             assert.equal(undefined, options.publicKeys)
         });
         
@@ -59,9 +59,9 @@ describe('DataDecrypt', function() {
             var d_decrypt = new data_decrypt.DataDecrypt(seckey, 'fake_pub_key');
             var options = d_decrypt.getOptions(pgp_msg);
             
-            assert.notEqual(0, options.data.length);
+            assert.notEqual(0, options.message.length);
             assert.notEqual(undefined, options.publicKeys)
-            assert.notEqual(undefined, options.privateKeys)
+            assert.notEqual(undefined, options.privateKey)
         });
     });
 });

@@ -5,12 +5,27 @@ var fs = require('fs');
 
 var DataDecrypt = function(seckey, pubkey) {
     if (seckey != undefined) {
-        this.seckey = openpgp.key.readArmored(seckey).keys;
+        this.seckey = openpgp.key.readArmored(seckey);
     }
     
     if (pubkey != undefined) {
-        this.pubkey = openpgp.key.readArmored(pubkey).keys
+        this.pubkey = openpgp.key.readArmored(pubkey).keys;
     }
+}
+
+DataDecrypt.prototype.decrypt = function (options, decrypted_file) {
+    var self = this;
+    openpgp.decryptKey({privateKey: self.seckey.keys[0], passphrase: 'test'})
+        .then(function (unlocked) {
+            options.privateKey = self.seckey.keys[0]
+            openpgp.decrypt(options).then(function(plaintext) {
+                fs.writeFile(decrypted_file, plaintext.data, function(err) {
+                    if (err) console.log(err);
+                    else console.log(decrypted_file + ' written!');
+                });
+
+        }).catch(function (err) {console.log(err)});
+    }).catch(function (err) {console.log(err)});
 }
 
 DataDecrypt.prototype.getOptions = function(data) {
@@ -21,8 +36,8 @@ DataDecrypt.prototype.getOptions = function(data) {
     }
     
     var options = {
-        data: openpgp.message.readArmored(data),
-        privateKeys: this.seckey
+        message: openpgp.message.readArmored(data),
+        privateKey: this.seckey
     };
 
     if (this.pubkey != undefined) {

@@ -14,3 +14,4 @@ var pubkey = "your public key";
 exports.pubkey = pubkey;
 
 var seckey = "your secret key";
+exports.seckey = seckey;

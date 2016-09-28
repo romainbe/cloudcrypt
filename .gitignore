@@ -7,5 +7,5 @@ node_modules
 
 client/node_modules
 client/config.js
-
+client/test.js
 client/tmp

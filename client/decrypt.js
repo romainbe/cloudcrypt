@@ -5,6 +5,7 @@ var FilesConfig = require('./FilesConfig');
 var dropbox = require('./DropboxConnector');
 var local_file = require('./LocalFile');
 var fs = require('fs');
+var data_decrypt = require('./DataDecrypt');
 
 var files_config = new FilesConfig.FilesConfig(config.files_to_crypt);
 var files_list = files_config.getAllFiles();
@@ -23,17 +24,22 @@ if (files_list.length) {
             {
                 console.log(metadata.name + ' downloaded!');
                 var local_f = new local_file.LocalFile(metadata);
-                
-                var file_name = local_f.getLocalDir() + '/' + local_f.getFileName();
-                
-                fs.writeFile(file_name, metadata.fileBinary, function(err) {
-                    if (err) throw err;
-                    console.log('File written on disk!');
-                });
+
+                decryptFile(local_f);
             })
             .catch((error) => {
                 console.log(error);
             });
     });
+}
+
+function decryptFile(local_f) {
+    var d_decrypt = new data_decrypt.DataDecrypt(config.seckey)
     
+    var options = d_decrypt.getOptions(local_f.metadata.fileBinary);
+
+    if (options !== undefined) {
+        var file_name = local_f.getLocalDir() + '/' + local_f.getFileName();
+        d_decrypt.decrypt(options, file_name);
+    }
 }
