@@ -34,7 +34,7 @@ if (files_list.length) {
 }
 
 function decryptFile(local_f) {
-    var d_decrypt = new data_decrypt.DataDecrypt(config.seckey)
+    var d_decrypt = new data_decrypt.DataDecrypt(config.seckey, config.passphrase)
     
     var options = d_decrypt.getOptions(local_f.metadata.fileBinary);
 

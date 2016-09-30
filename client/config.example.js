@@ -15,3 +15,6 @@ exports.pubkey = pubkey;
 
 var seckey = "your secret key";
 exports.seckey = seckey;
+
+var passphrase = '';
+exports.passphrase = passphrase;

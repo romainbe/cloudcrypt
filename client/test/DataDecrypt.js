@@ -51,8 +51,9 @@ describe('DataDecrypt', function() {
             var options = d_decrypt.getOptions(pgp_msg);
             
             assert.notEqual(0, options.message.length);
-            assert.notEqual(undefined, options.privateKey)
-            assert.equal(undefined, options.publicKeys)
+            assert.notEqual(undefined, options.privateKey);
+            assert.equal(undefined, options.publicKeys);
+            assert.equal('binary', options.format);
         });
         
         it('should return options if public and private keys are supplied', function() {
@@ -60,8 +61,9 @@ describe('DataDecrypt', function() {
             var options = d_decrypt.getOptions(pgp_msg);
             
             assert.notEqual(0, options.message.length);
-            assert.notEqual(undefined, options.publicKeys)
-            assert.notEqual(undefined, options.privateKey)
+            assert.notEqual(undefined, options.publicKeys);
+            assert.notEqual(undefined, options.privateKey);
+            assert.equal('binary', options.format);
         });
     });
 });
