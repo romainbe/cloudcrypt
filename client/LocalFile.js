@@ -15,8 +15,22 @@ LocalFile.prototype.getFileName = function () {
 
 LocalFile.prototype.getLocalDir = function () {
     var last_slash_pos = this.metadata.path_display.lastIndexOf('/') + 1;
-    
+
     return this.metadata.path_display.slice(0, last_slash_pos);
+}
+
+LocalFile.prototype.dirExists = function (dir_path) {
+    return true;
+}
+
+LocalFile.prototype.mklocaldir = function (dir_path) {
+    
+}
+
+LocalFile.prototype.mklocaldirIfNotExists = function (dir_path) {
+    if (this.dirExists(dir_path)  == false) {
+        this.mklocaldir(dir_path);
+    }
 }
 
 exports.LocalFile = LocalFile;
