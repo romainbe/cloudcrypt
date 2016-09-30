@@ -57,7 +57,7 @@ describe('DataDecrypt', function() {
         });
         
         it('should return options if public and private keys are supplied', function() {
-            var d_decrypt = new data_decrypt.DataDecrypt(seckey, 'fake_pub_key');
+            var d_decrypt = new data_decrypt.DataDecrypt(seckey, '', 'fake_pub_key');
             var options = d_decrypt.getOptions(pgp_msg);
             
             assert.notEqual(0, options.message.length);

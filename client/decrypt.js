@@ -39,7 +39,7 @@ function decryptFile(local_f) {
     var options = d_decrypt.getOptions(local_f.metadata.fileBinary);
 
     if (options !== undefined) {
-        var file_name = local_f.getLocalDir() + '/' + local_f.getFileName();
+        var file_name = local_f.getLocalDir() + local_f.getFileName();
         d_decrypt.decrypt(options, file_name);
     }
 }
