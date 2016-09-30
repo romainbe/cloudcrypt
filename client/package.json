@@ -1,8 +1,8 @@
 {
   "name": "cloudcrypt_client",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "PGP Encrypt files before sending them to DropBox",
-  "main": "index.js",
+  "main": "crypt.js",
   "directories": {
     "test": "test"
   },
@@ -21,6 +21,10 @@
     "Cloud",
     "Crypt"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/romainbe/cloudcrypt.git"
+  },
   "author": "Romain Bertholon",
   "license": "MIT"
 }
