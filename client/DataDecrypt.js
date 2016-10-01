@@ -25,7 +25,7 @@ DataDecrypt.prototype.decrypt = function (options, decrypted_filename) {
             passphrase: this.passphrase
         })
         .then(function (unlocked) {
-            options.privateKey = options.privateKey.keys[0]
+            options.privateKey = options.privateKey.keys[0];
             
             openpgp.decrypt(options).then(function(decrypted_data) {
                 self.writeDecryptedFile(decrypted_data, decrypted_filename);

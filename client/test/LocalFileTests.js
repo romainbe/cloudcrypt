@@ -36,31 +36,31 @@ describe('LocalFile', function() {
         beforeEach(function () {
             simple.mock(local_file, 'mklocaldir')
                 .callFn(function (dir_path) { });
-            simple.mock(local_file, 'dirExists')
-                .callFn(function (dir_path) { return false; });
+            simple.mock(local_file, 'canMkdir')
+                .callFn(function (dir_path) { return true; });
         });
 
         afterEach(function () {
             simple.restore();
         });
 
-        it ('should call dirExists', function () {
+        it ('should call canMkdir', function () {
             local_file.mklocaldirIfNotExists('path');
 
-            assert(local_file.dirExists.called);
-            assert.equal(1, local_file.dirExists.callCount);
+            assert(local_file.canMkdir.called);
+            assert.equal(1, local_file.canMkdir.callCount);
         });
 
-        it('should call mklocaldir if the directory does not exist', function () {
+        it('should call mklocaldir if the directory can be created', function () {
             local_file.mklocaldirIfNotExists('path');
 
             assert(local_file.mklocaldir.called);
             assert.equal(1, local_file.mklocaldir.callCount);
         });
 
-        it ('should NOT call mklocaldir if the directory exist', function () {
-            simple.mock(local_file, 'dirExists')
-                .callFn(function (dir_path) { return true; });
+        it ('should NOT call mklocaldir if the directory cannot be created', function () {
+            simple.mock(local_file, 'canMkdir')
+                .callFn(function (dir_path) { return false; });
 
             local_file.mklocaldirIfNotExists('path');
 
