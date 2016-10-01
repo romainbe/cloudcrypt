@@ -15,36 +15,41 @@ if (files_list.length) {
     var dbx = dbx_ctor.init(config.conf.dropbox_access_token);
 
     files_list.forEach((file) => {
-        var file_dl_info = {
-            path: file + '.pgp'
-        };
-        
-        dbx.filesDownload(file_dl_info)
-            .then((metadata) => 
-            {
-                console.log(metadata.name + ' downloaded!');
-                var local_f = new local_file.LocalFile(metadata);
+        var local_f = new local_file.LocalFile();
+        var local_dir = local_f.getLocalDir(file);
 
-                decryptFile(local_f);
-            })
-            .catch((error) => {
-                console.log(error);
-            });
+            var args = {
+                local_f: local_f,
+                file: file
+            };
+
+            local_f.mklocaldir(local_dir, downloadAndDecryptFile, args);
     });
 }
 
-function decryptFile(local_f) {
+function downloadAndDecryptFile(local_f, file) {
+    var file_dl_info = {
+        path: file + '.pgp'
+    };
+        
+    dbx.filesDownload(file_dl_info)
+        .then((metadata) => {
+            console.log(metadata.name + ' downloaded!');
+            local_f.setMetadata(metadata);
+
+            decryptFile(local_f, file);
+        })
+        .catch((error) => {
+            console.log(error);
+        });
+}
+
+function decryptFile(local_f, file) {
     var d_decrypt = new data_decrypt.DataDecrypt(config.seckey, config.passphrase)
-    
+
     var options = d_decrypt.getOptions(local_f.metadata.fileBinary);
     if (options !== undefined) {
-        var local_dir = local_f.getLocalDir();
-        
-        try {
-            local_f.mklocaldirIfNotExists(local_dir);
-            
-            var file_name = local_dir + local_f.getFileName();
-            d_decrypt.decrypt(options, file_name);
-        } catch (err) {}
+        var file_name = local_f.getLocalDir(file) + local_f.getFileName();
+        d_decrypt.decrypt(options, file_name);
     }
 }

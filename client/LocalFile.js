@@ -16,42 +16,27 @@ LocalFile.prototype.getFileName = function () {
     return this.metadata.name.slice(0, this.metadata.name.length - len);
 }
 
-LocalFile.prototype.getLocalDir = function () {
-    var last_slash_pos = this.metadata.path_display.lastIndexOf('/') + 1;
-
-    return this.metadata.path_display.slice(0, last_slash_pos);
+LocalFile.prototype.getLocalDir = function (full_path) {
+    if (full_path == undefined) {
+        full_path = this.metadata.path_display;
+    }
+    var last_slash_pos = full_path.lastIndexOf('/') + 1;
+    return full_path.slice(0, last_slash_pos);
 }
 
-LocalFile.prototype.canMkdir = function (dir_path) {
-    var ret_val = true;
-    try {
-        var file_stats = fs.statSync(dir_path);
-        if (!file_stats.isDirectory()) {
-            ret_val = false;
-        }
-    } catch (err) {
-        if (err.code != 'ENOENT') {
-            ret_val = false;
+LocalFile.prototype.mklocaldir = function (local_dir, cb, args) {
+    mkdirp(local_dir, (err) => {
+        if (err) {
+            console.log('could not create ' + local_dir + ', cannot get ' + args.file);
             console.log(err);
+        } else {
+            cb(args.local_f, args.file);
         }
-    }
-    return ret_val;
+    });
 }
 
-LocalFile.prototype.mklocaldir = function (dir_path) {
-    try {
-        mkdirp.sync(dir_path);
-    } catch (err) {
-        console.log(err);
-        throw err;
-    }
-}
-
-LocalFile.prototype.mklocaldirIfNotExists = function (dir_path) {
-    if (this.canMkdir(dir_path) == true) {
-        this.mklocaldir(dir_path);
-    }
+LocalFile.prototype.setMetadata = function (metadata) {
+    this.metadata = metadata;
 }
 
 exports.LocalFile = LocalFile;
-
