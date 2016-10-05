@@ -5,8 +5,7 @@ var files_to_crypt = [
 export.files_to_crypt = files_to_crypt;
 
 var conf = {
-    "fileName": "/home/romain/hello_world.txt"
-    "dropbox_access_token": "YOUR_ACCESS_TOKEN_HERE"
+    "dropbox_access_token": "YOUR_ACCESS_TOKEN_HERE",
     };
 exports.conf = conf;
 

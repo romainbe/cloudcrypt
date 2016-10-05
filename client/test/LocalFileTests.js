@@ -9,6 +9,7 @@ describe('LocalFile', function() {
         name: 'some_file.txt.pgp',
         path_display: '/some/path/some_file.txt.pgp'
     };
+
     describe('getFileName', function() {
         it('should return the name without the pgp extension',
         function() {

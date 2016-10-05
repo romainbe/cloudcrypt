@@ -7,7 +7,7 @@
     "test": "test"
   },
   "dependencies": {
-    "dropbox": "^2.2.1",
+    "dropbox": "^2.3.0",
     "mkdirp": "^0.5.1",
     "openpgp": "^2.3.3"
   },

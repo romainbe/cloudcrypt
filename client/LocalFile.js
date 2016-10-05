@@ -30,7 +30,7 @@ LocalFile.prototype.mklocaldir = function (local_dir, cb, args) {
             console.log('could not create ' + local_dir + ', cannot get ' + args.file);
             console.log(err);
         } else {
-            cb(args.local_f, args.file);
+            cb(args.local_f, args.file, args.dbx);
         }
     });
 }
