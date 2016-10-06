@@ -15,38 +15,52 @@ var Decrypt = function () {
         var dbx_ctor = new dropbox.DropboxConnector();
         this.dbx = dbx_ctor.init(config.conf.dropbox_access_token);
     }
-    
+
     this.done = false;
+    this.last_cursor = '';
 }
 
 Decrypt.prototype.getLatestCursorAndPollRemote = function () {
+    var self = this;
     if (this.files_list.length) {
-        this.getLatestCursor(this.dbx, this.files_list, this.dropboxLongpollAtInterval, this);
+        self.dbx.filesListFolderGetLatestCursor({
+            path: '',
+            recursive: true,
+            include_media_info: false,
+            include_deleted: false,
+            include_has_explicit_shared_members: false
+        })
+        .then((last_cursor) => {
+            console.log(last_cursor.cursor);
+            self.last_cursor = last_cursor.cursor;
+            self.dropboxLongpollAtInterval();
+        })
+        .catch((err) => {
+            console.log(error);
+        });
     }
 }
 
-Decrypt.prototype.dropboxLongpollAtInterval = function (dbx, last_cursor, files_list, self) {
-    var longpoll_args = {
-        cursor: last_cursor,
-        timeout: 30
-    };
-
+Decrypt.prototype.dropboxLongpollAtInterval = function () {
+   var self = this;
+    
     setInterval(function () {
         if (!self.done) {
+            var longpoll_args = {
+                cursor: self.last_cursor,
+                timeout: 30
+            };
+
             self.done = true;
-            dbx.filesListFolderLongpoll(longpoll_args)
+            console.log('start polling');
+            self.dbx.filesListFolderLongpoll(longpoll_args)
                 .then((result) => {
                     console.log(result);
                     if (result.changes == true) {
-                        self.syncLocalWithRemote(dbx, files_list)
-                        self.getLatestCursor(dbx, files_list,
-                        (dbx, last_cursor_cb, files_list, args) => {
-                            args.cursor = last_cursor_cb
-                            self.done = false;
-                        }, longpoll_args);
+                        self.syncLocalWithRemote()
+                    } else {
+                        self.done = false;
                     }
-                    
-                    self.done = false;
                 })
                 .catch((err) => { 
                     console.log(err);
@@ -56,28 +70,42 @@ Decrypt.prototype.dropboxLongpollAtInterval = function (dbx, last_cursor, files_
     }, 2000);
 }
 
-Decrypt.prototype.syncLocalWithRemote = function (dbx, files_list) {
-    files_list.forEach((file) => {
-        var local_f = new local_file.LocalFile();
-        var local_dir = local_f.getLocalDir(file);
+Decrypt.prototype.syncLocalWithRemote = function () {
+    var self = this;
 
-        var args = {
-            local_f: local_f,
-            file: file,
-            dbx: dbx,
-            self: this
-        };
+    self.dbx.filesListFolderContinue({cursor: self.last_cursor})
+        .then((results) => {
+            console.log(results);
+            results.entries.forEach((file) => {
+                self.last_cursor = results.cursor;
+                if (self.files_list.indexOf(file.path_display) != -1) {
+                    var local_f = new local_file.LocalFile();
+                    var local_dir = local_f.getLocalDir(file.path_display);
 
-        local_f.mklocaldir(local_dir, this.downloadAndDecryptFile, args);
-    });
+                    if (local_f.mklocaldir(local_dir) == true) {
+                        this.downloadAndDecryptFile(local_f, file.path_display);
+                    }
+                }
+            });
+            if (results.hasMore) {
+                self.syncLocalWithRemote();
+            } else {
+                self.done = false;
+            }
+        })
+        .catch((err) => {
+            console.log('continue error : ' + err);
+        });
 }
 
-Decrypt.prototype.downloadAndDecryptFile = function (local_f, file, dbx, self) {
+Decrypt.prototype.downloadAndDecryptFile = function (local_f, file) {
+    
     var file_dl_info = {
         path: file + '.pgp'
     };
 
-    dbx.filesDownload(file_dl_info)
+    var self = this;
+    this.dbx.filesDownload(file_dl_info)
         .then((metadata) => {
             console.log(metadata.name + ' downloaded!');
             local_f.setMetadata(metadata);
@@ -116,5 +144,4 @@ Decrypt.prototype.getLatestCursor = function (dbx, files_list, cb, args) {
         });
 }
 
-var decryptor = new Decrypt();
-decryptor.getLatestCursorAndPollRemote();
+exports.Decrypt = Decrypt;

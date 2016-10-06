@@ -24,15 +24,16 @@ LocalFile.prototype.getLocalDir = function (full_path) {
     return full_path.slice(0, last_slash_pos);
 }
 
-LocalFile.prototype.mklocaldir = function (local_dir, cb, args) {
-    mkdirp(local_dir, (err) => {
-        if (err) {
-            console.log('could not create ' + local_dir + ', cannot get ' + args.file);
-            console.log(err);
-        } else {
-            cb(args.local_f, args.file, args.dbx, args.self);
-        }
-    });
+LocalFile.prototype.mklocaldir = function (local_dir) {
+    var ret_val = true;
+    try {
+        mkdirp.sync(local_dir)
+    } catch (err) {
+        console.log('could not create ' + local_dir + ', cannot get ' + args.file);
+        console.log(err);
+        ret_val = false;
+    }
+    return ret_val;
 }
 
 LocalFile.prototype.setMetadata = function (metadata) {
