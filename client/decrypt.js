@@ -77,13 +77,18 @@ Decrypt.prototype.syncLocalWithRemote = function () {
         .then((results) => {
             console.log(results);
             results.entries.forEach((file) => {
+                console.log(file.path_display);
+                console.log(self.files_list);
+
                 self.last_cursor = results.cursor;
-                if (self.files_list.indexOf(file.path_display) != -1) {
+                
+                var file_name = file.path_display.slice(0, file.path_display.length - 4);
+                if (self.files_list.indexOf(file_name) != -1) {
                     var local_f = new local_file.LocalFile();
-                    var local_dir = local_f.getLocalDir(file.path_display);
+                    var local_dir = local_f.getLocalDir(file_name);
 
                     if (local_f.mklocaldir(local_dir) == true) {
-                        this.downloadAndDecryptFile(local_f, file.path_display);
+                        this.downloadAndDecryptFile(local_f, file_name);
                     }
                 }
             });
