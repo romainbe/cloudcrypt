@@ -10,7 +10,7 @@ var data_decrypt = require('./DataDecrypt');
 var Decrypt = function () {
     var files_config = new FilesConfig.FilesConfig(config.files_to_crypt);
     this.files_list = files_config.getAllFiles();
-    
+
     if (this.files_list.length) {
         var dbx_ctor = new dropbox.DropboxConnector();
         this.dbx = dbx_ctor.init(config.conf.dropbox_access_token);
@@ -42,8 +42,8 @@ Decrypt.prototype.getLatestCursorAndPollRemote = function () {
 }
 
 Decrypt.prototype.dropboxLongpollAtInterval = function () {
-   var self = this;
-    
+    var self = this;
+
     setInterval(function () {
         if (!self.done) {
             var longpoll_args = {
